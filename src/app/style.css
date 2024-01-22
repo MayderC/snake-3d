@@ -1,0 +1,14 @@
+
+.main{
+  height: 100vh;
+  min-height: 100vh;
+  width: 100%;
+  background-color: rgb(16, 16, 16);
+}
+
+
+.main h1 {
+  color: white;
+  font-size: 3rem;
+  text-align: center;
+}
