@@ -1,4 +1,4 @@
-import { Group, Mesh, Object3D, Object3DEventMap, PointLight } from "three";
+import { Mesh, Object3D, Object3DEventMap, PointLight } from "three";
 import { LifeCycle } from "../helpers/LifeCycle";
 import { Loader } from "@/three/setup/Loader";
 

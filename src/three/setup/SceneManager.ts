@@ -1,44 +1,39 @@
 import { Camera } from "./Camera";
-import { Clock, DoubleSide, Group, HemisphereLight, Mesh, MeshLambertMaterial, PlaneGeometry, Scene, SphereGeometry, TextureLoader} from 'three';
+import { Clock, DoubleSide, Group, HemisphereLight, Mesh, MeshLambertMaterial, Scene, SphereGeometry, TextureLoader} from 'three';
 import { Diodrama } from '../game/objects/Diodrama';
 import { Loader } from "./Loader";
 import { Render } from "./Render";
 
-const loader = new Loader();
 
 export class SceneManager {
-
+  
   public static camera : Camera
   public static scene : Scene
   public static diodrama : Diodrama
   public static mainGroup : Group = new Group();
-
-
+  public static loader : Loader
+  
+  
   public static init() {
+    SceneManager.loader = new Loader();
     SceneManager.camera = new Camera();
     SceneManager.scene = new Scene();
     SceneManager.createDiodrama();
     SceneManager.createLight()
     SceneManager.setSkyBox();
     SceneManager.resize();
+    SceneManager.setSizes();
   }
 
   public static async setSkyBox() {
-
-
     const texture = new TextureLoader().load('/textures/space.jpeg')
-
     const skyBox = new Mesh(
       new SphereGeometry(100, 100, 100),
       new MeshLambertMaterial({map: texture, side: DoubleSide})
     );
-
     skyBox.scale.set(-1, 1, 1);
     skyBox.rotation.x = Math.PI / 180 * 90;
     skyBox.rotation.y = Math.PI / 180 * 180;
-
-
-    console.log('skyBox', skyBox);
     SceneManager.scene.add(skyBox);
 
     const clock = new Clock();
@@ -57,22 +52,26 @@ export class SceneManager {
   }
 
   private static resize() {
-
+    console.log('resize');
     window.addEventListener('resize', () => {
-
-      if(window.innerWidth < 860) {
-        SceneManager.camera.position.set(0, 45, 0);
-        SceneManager.mainGroup.position.set(0, 0, -4);
-        Render.getInstance().onResize()
-      }
-      else {
-        SceneManager.camera.position.set(0, 30, 0);
-        Render.getInstance().onResize()
-      }
-
+      this.setSizes()
     });
 
+  }
 
+  private static setSizes() {
+    if(window.innerWidth < 860) {
+      console.log('mobile');
+      SceneManager.camera.position.set(0, 40, 30);
+      SceneManager.mainGroup.position.set(0, 10, 0);
+      SceneManager.mainGroup.rotation.x = Math.PI / 180 * 0
+      SceneManager.camera.lookAt(0, 0,0)
+    }
+    else{
+      SceneManager.camera.position.set(0, 30, 0);
+      SceneManager.mainGroup.rotation.x = Math.PI / 180 * -50;
+      this.camera.lookAt(SceneManager.mainGroup.position)
+    }
   }
 
   private static createLight() {
@@ -95,25 +94,17 @@ export class SceneManager {
     const clock = new Clock();
     function animateGroupRotation() {
       const delta = clock.getDelta();
-      //SceneManager.mainGroup.rotation.x += 0.5 * delta;
       SceneManager.mainGroup.rotation.y += 0.3 * delta;
     }
-
 
     const animateLoopRotation = () => {
       requestAnimationFrame(animateLoopRotation);
       animateGroupRotation();
     }
-
     animateLoopRotation();
   
-    
+  
 
-
-
-    this.camera.position.set(0, 30, 0);
-    this.camera.lookAt(SceneManager.mainGroup.position)
-    SceneManager.mainGroup.rotation.x = Math.PI / 180 * -50;
     SceneManager.scene.add(SceneManager.mainGroup);
   }
 
