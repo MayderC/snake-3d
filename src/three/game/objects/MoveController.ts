@@ -28,16 +28,16 @@ export class MoveController {
 
   private keyBoardListener() {
     document.addEventListener('keydown', (event) => {
-      if (this.acceptedMoves.includes(event.key)) {
-        if (this.oppositeDirection.get(this.lastMove)?.includes(event.key) == false) {
-           return this.lastMove = event.key;
-        }
-      }
+      this.setLastMove(event.key);
     });
   }
 
   setLastMove(move: string) {
-    this.lastMove = move;
+    if (this.acceptedMoves.includes(move)) {
+      if (this.oppositeDirection.get(this.lastMove)?.includes(move) == false) {
+         return this.lastMove = move;
+      }
+    }
   }
 
   startAutoMove() {
