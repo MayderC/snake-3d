@@ -24,7 +24,6 @@ export class Render  {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setClearColor(0x000000, 0);
-    console.log(renderer);
     return renderer
   }
 

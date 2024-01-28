@@ -3,6 +3,7 @@ import { Clock, DoubleSide, Group, HemisphereLight, Mesh, MeshLambertMaterial, S
 import { Diodrama } from '../game/objects/Diodrama';
 import { Loader } from "./Loader";
 import { Render } from "./Render";
+import { MoveController } from "../game/objects/MoveController";
 
 
 export class SceneManager {
@@ -12,6 +13,7 @@ export class SceneManager {
   public static diodrama : Diodrama
   public static mainGroup : Group = new Group();
   public static loader : Loader
+  public static control: MoveController;
   
   
   public static init() {
@@ -23,6 +25,8 @@ export class SceneManager {
     SceneManager.setSkyBox();
     SceneManager.resize();
     SceneManager.setSizes();
+    SceneManager.control = new MoveController(SceneManager.diodrama);
+    SceneManager.control.startAutoMove();
   }
 
   public static async setSkyBox() {
@@ -52,7 +56,6 @@ export class SceneManager {
   }
 
   private static resize() {
-    console.log('resize');
     window.addEventListener('resize', () => {
       this.setSizes()
     });
@@ -61,9 +64,8 @@ export class SceneManager {
 
   private static setSizes() {
     if(window.innerWidth < 860) {
-      console.log('mobile');
-      SceneManager.camera.position.set(0, 40, 30);
-      SceneManager.mainGroup.position.set(0, 10, 0);
+      SceneManager.camera.position.set(0, 40, 33);
+      SceneManager.mainGroup.position.set(0, 10, -4);
       SceneManager.mainGroup.rotation.x = Math.PI / 180 * 0
       SceneManager.camera.lookAt(0, 0,0)
     }
@@ -72,6 +74,7 @@ export class SceneManager {
       SceneManager.mainGroup.rotation.x = Math.PI / 180 * -50;
       this.camera.lookAt(SceneManager.mainGroup.position)
     }
+    SceneManager.mainGroup.rotation.y = Math.PI / 180 * 45; 
   }
 
   private static createLight() {
@@ -101,7 +104,7 @@ export class SceneManager {
       requestAnimationFrame(animateLoopRotation);
       animateGroupRotation();
     }
-    animateLoopRotation();
+    //animateLoopRotation();
   
   
 

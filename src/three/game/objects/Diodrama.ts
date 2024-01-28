@@ -1,4 +1,4 @@
-import { DoubleSide, GridHelper, Mesh, MeshLambertMaterial, PlaneGeometry } from "three";
+import { GridHelper } from "three";
 import { LifeCycle } from "../helpers/LifeCycle";
 import { Food } from "./Food";
 import { Snake } from "./Snake";
@@ -10,21 +10,18 @@ export class Diodrama implements LifeCycle {
   public food : Food
   public snake : Snake 
   public score : number = 0;
-  public grid: GridHelper = new GridHelper(15, 15, 0x0000ff, 0x808080);
+  public sizeGrid : number = 9;
+  public grid: GridHelper = new GridHelper(this.sizeGrid, this.sizeGrid, 0x0000ff, 0x808080);
 
 
   constructor() {
-    this.keyBoardListener();
     this.food = new Food("/apple.glb");
-    this.snake = Snake.getInstance();
     this.food.init();
+    this.snake = Snake.getInstance(this.sizeGrid);
   }
 
-  private keyBoardListener() {
+  public gameOver() {
 
-    document.addEventListener('keydown', (event) => {
-      this.snake.move(event.key, this.food);
-    });
   }
 
   public async init() {
@@ -33,7 +30,6 @@ export class Diodrama implements LifeCycle {
     this.grid.rotation.x = Math.PI / 180 * 0;
     await this.food.getModelFood()
   }
-
 
   public update() {
     // console.log('update');

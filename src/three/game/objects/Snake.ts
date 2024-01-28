@@ -11,12 +11,14 @@ export class Snake implements LifeCycle {
 
   public body: Mesh[] = []
   private geometry : RoundedBoxGeometry = new RoundedBoxGeometry(1, 1, 1);
-  private material : MeshBasicMaterial = new MeshBasicMaterial({ color: 0x00ff00});
+  private material : MeshBasicMaterial = new MeshBasicMaterial({ color: 'blue'});
   public head: Mesh = new Mesh(this.geometry, new MeshBasicMaterial({ color: 'red'})); 
   public tail : Mesh = new Mesh(this.geometry, this.material);
-  private lastMove : string = 'ArrowUp';
+  public lastMove : string = 'ArrowUp';
   private iCanEat : boolean = false;
   private lastTailPosition = this.tail.position
+  private cubeSize = 1;
+  private gridLimit = 0
   private oppositeDirection = new Map<string, string[]>(
     [
       ['ArrowUp', ['ArrowDown', 's']],
@@ -33,30 +35,30 @@ export class Snake implements LifeCycle {
 
   public static instance: Snake;
 
-  public static getInstance() {
+  public static getInstance(limit: number) {
     if (!Snake.instance) {
-      Snake.instance = new Snake();
+      Snake.instance = new Snake(limit);
     }
 
     return Snake.instance;
   }
 
-  private constructor() {
+  private constructor(limit: number) {
+    this.gridLimit = Math.floor(limit / 2);
     this.init();
   }
 
   public init() {
     const item1 = new Mesh(this.geometry, this.material);
-
-    this.tail.scale.set(1/2, 1/2, 1/2);
+    this.tail.scale.set(this.cubeSize, this.cubeSize, this.cubeSize);
     this.tail.position.set(0, 0, 2);
     this.tail.name = 'tail';
 
-    item1.scale.set(1/2, 1/2, 1/2);
+    item1.scale.set(this.cubeSize, this.cubeSize, this.cubeSize);
     item1.position.set(0, 0, 1);
     item1.name = 'body';
     
-    this.head.scale.set(1/2, 1/2, 1/2);
+    this.head.scale.set(this.cubeSize, this.cubeSize, this.cubeSize);
     this.head.position.set(0, 0, 0);
     this.head.name = 'head';
 
@@ -75,6 +77,9 @@ export class Snake implements LifeCycle {
     this.iCanEat = false;
     SceneManager.mainGroup.remove(food.food);
     SceneManager.diodrama.food.newPosition();
+    while(!SceneManager.diodrama.food.isAvailablePosition([this.head, ...this.body], SceneManager.diodrama.food.food.position)) {
+      SceneManager.diodrama.food.newPosition();
+    }
     SceneManager.mainGroup.add(food.food);
     this.addTail();
   }
@@ -95,10 +100,7 @@ export class Snake implements LifeCycle {
   public move(direction : string, food: Food) {
     const currentPosition = new Vector3(this.head.position.x, this.head.position.y, this.head.position.z);
     const newPosition = new Vector3(this.head.position.x, this.head.position.y, this.head.position.z)
-    const acceptedMoves = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 's', 'a', 'd'];
-    
-    if (!acceptedMoves.includes(direction)) return;
-    if (this.oppositeDirection.get(direction)?.includes(this.lastMove)) return;
+
     
     if (['ArrowUp', 'w'].includes(direction)) {
       newPosition.z = currentPosition.z - 1;
@@ -124,8 +126,8 @@ export class Snake implements LifeCycle {
 
 
   private ICrash(x: number, z: number) {
-    if (x > 7 || x < -7) return true
-    if (z > 7 || z < -7) return true;
+    if (x > this.gridLimit || x < -(this.gridLimit)) return true
+    if (z > this.gridLimit || z < -(this.gridLimit)) return true;
     const h = this.head.position; const t = this.tail;
     return this.body.some((m: Mesh) => m.position.x === h.x && m.position.z === h.z)
   }
