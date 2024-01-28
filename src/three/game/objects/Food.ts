@@ -1,4 +1,4 @@
-import { Mesh, Object3D, Object3DEventMap, PointLight } from "three";
+import { Mesh, Object3D, Object3DEventMap, PointLight, Vector3 } from "three";
 import { LifeCycle } from "../helpers/LifeCycle";
 import { Loader } from "@/three/setup/Loader";
 
@@ -20,18 +20,24 @@ export class Food implements LifeCycle {
   }
 
   getRandomInt() {
-    return Math.floor(Math.random() * 15) - 7;
+    return Math.floor(Math.random() * 8) - 4;
   }
 
   private setDefaultProperties() {
     this.food = this.BaseFood?.clone();
     this.newPosition();
-    this.food.scale.set(1/3, 1/3, 1/3);
+    this.food.scale.set(1/2, 1/2, 1/2);
     this.food.rotation.x = Math.PI / 180 * 0;
   }
 
   public newPosition() {
     this.food.position.set(this.getRandomInt(), 0, this.getRandomInt());
+  }
+
+  public isAvailablePosition(snakePosition: Mesh[], position: Vector3) {
+    return !snakePosition.some((item) => {
+      return item.position.x === position.x && item.position.z === position.z
+    })
   }
 
   async getModelFood() {
