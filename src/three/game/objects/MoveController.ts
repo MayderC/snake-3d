@@ -36,6 +36,10 @@ export class MoveController {
     });
   }
 
+  setLastMove(move: string) {
+    this.lastMove = move;
+  }
+
   startAutoMove() {
     this.interval = setInterval(() => {
       this.diodrama.snake.move(this.lastMove, this.diodrama.food);

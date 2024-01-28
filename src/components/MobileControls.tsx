@@ -9,7 +9,7 @@ const MobileControls = () => {
   const [pause, setPause] = useState(false)
 
   const handleMovement = (direction : string) => {
-    SceneManager.diodrama.snake.move(direction, SceneManager.diodrama.food)
+    SceneManager.control.setLastMove(direction)
   }
 
   return (
