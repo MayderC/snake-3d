@@ -9,7 +9,18 @@ const MobileControls = () => {
   const [pause, setPause] = useState(false)
 
   const handleMovement = (direction : string) => {
+    if(pause) return
     SceneManager.control.setLastMove(direction)
+  }
+
+  const pauseGame = () => {
+    setPause(true)
+    SceneManager.control.stopAutoMove()
+  }
+
+  const playGame = () => {
+    setPause(false)
+    SceneManager.control.startAutoMove()
   }
 
   return (
@@ -30,8 +41,8 @@ const MobileControls = () => {
       <div className='pause'>
         {
           pause 
-          ?<Image  src='/controls/pause.png' width={50} height={50} alt='' />
-          :<Image src='/controls/play.png' width={50} height={50} alt='' />
+          ?<Image onClick={playGame}  src='/controls/pause.png' width={50} height={50} alt='' />
+          :<Image onClick={pauseGame}  src='/controls/play.png' width={50} height={50} alt='' />
         }
       </div>
 

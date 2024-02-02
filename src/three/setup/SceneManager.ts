@@ -26,7 +26,6 @@ export class SceneManager {
     SceneManager.resize();
     SceneManager.setSizes();
     SceneManager.control = new MoveController(SceneManager.diodrama);
-    SceneManager.control.startAutoMove();
   }
 
   public static async setSkyBox() {
@@ -64,8 +63,8 @@ export class SceneManager {
 
   private static setSizes() {
     if(window.innerWidth < 860) {
-      SceneManager.camera.position.set(0, 40, 33);
-      SceneManager.mainGroup.position.set(0, 10, -4);
+      SceneManager.camera.position.set(0, 30, 20);
+      SceneManager.mainGroup.position.set(0, 4, -4);
       SceneManager.mainGroup.rotation.x = Math.PI / 180 * 0
       SceneManager.camera.lookAt(0, 0,0)
     }

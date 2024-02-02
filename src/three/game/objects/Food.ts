@@ -1,6 +1,8 @@
 import { Mesh, Object3D, Object3DEventMap, PointLight, Vector3 } from "three";
 import { LifeCycle } from "../helpers/LifeCycle";
 import { Loader } from "@/three/setup/Loader";
+import { SceneManager } from "@/three/setup/SceneManager";
+import { Render } from "@/three/setup/Render";
 
 
 export class Food implements LifeCycle {
@@ -13,14 +15,13 @@ export class Food implements LifeCycle {
   public stepMove: number = 1/7;
 
   constructor(path: string ) {
-
     this.path = path;
     this.BaseFood = null;
     this.food = null;
   }
 
   getRandomInt() {
-    return Math.floor(Math.random() * 8) - 4;
+    return Math.floor(Math.random() * SceneManager.diodrama.sizeGrid) - Math.floor(SceneManager.diodrama.sizeGrid / 2);
   }
 
   private setDefaultProperties() {
@@ -34,10 +35,8 @@ export class Food implements LifeCycle {
     this.food.position.set(this.getRandomInt(), 0, this.getRandomInt());
   }
 
-  public isAvailablePosition(snakePosition: Mesh[], position: Vector3) {
-    return !snakePosition.some((item) => {
-      return item.position.x === position.x && item.position.z === position.z
-    })
+  public isAvailablePosition(snakePosition: Mesh[], food: Vector3) {
+    return !snakePosition.some(({position}) => position.x === food.x && position.z === food.z)
   }
 
   async getModelFood() {

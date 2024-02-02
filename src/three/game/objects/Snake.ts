@@ -77,11 +77,34 @@ export class Snake implements LifeCycle {
     this.iCanEat = false;
     SceneManager.mainGroup.remove(food.food);
     SceneManager.diodrama.food.newPosition();
-    while(!SceneManager.diodrama.food.isAvailablePosition([this.head, ...this.body], SceneManager.diodrama.food.food.position)) {
-      SceneManager.diodrama.food.newPosition();
-    }
-    SceneManager.mainGroup.add(food.food);
     this.addTail();
+
+
+    let generatedPositions = new Set();
+    let flagFinish = false;
+
+
+    while(!SceneManager.diodrama.food.isAvailablePosition([this.head, ...this.body], SceneManager.diodrama.food.food.position)) {
+      if((generatedPositions.size) > SceneManager.diodrama.sizeGrid * SceneManager.diodrama.sizeGrid - SceneManager.diodrama.snake.body.length) flagFinish = true;
+      if(flagFinish) break;
+      const post = SceneManager.diodrama.food.food.position;
+      const key = `[${post.x}]-[${post.z}]`;
+
+      SceneManager.diodrama.food.newPosition();
+      if(generatedPositions.has(key)) {
+        console.log('repetido', key);
+        continue;
+      };
+      generatedPositions.add(key);
+    }
+
+    if(flagFinish) {
+      console.log(generatedPositions);
+      console.log('Juego Terminado');
+      return
+    }
+
+    SceneManager.mainGroup.add(food.food);
   }
 
   private addTail() {
@@ -111,14 +134,20 @@ export class Snake implements LifeCycle {
     } else if ([ 'ArrowRight', 'd'].includes(direction)) {
       newPosition.x = currentPosition.x + 1;
     }
-    this.lastMove = direction;
 
-    if(this.ICrash(newPosition.x, newPosition.z))return
+    this.lastMove = direction;
+    if(this.ICrash(newPosition.x, newPosition.z)){
+
+      SceneManager.diodrama.gameOver(
+        () => SceneManager.control.stopAutoMove()
+      );
+
+      return;
+    }
     this.head.position.set(newPosition.x, newPosition.y, newPosition.z);
 
     if(this.canIEat(food.food.position)) this.iCanEat = true;
     if (this.iCanEat) this.lastTailPosition = this.tail.position.clone();
-
 
     this.followHead(currentPosition);
     if (this.iCanEat) this.eat(food);
