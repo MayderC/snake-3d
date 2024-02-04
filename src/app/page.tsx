@@ -7,17 +7,26 @@ import MobileControls from '@/components/MobileControls/MobileControls';
 import { GameMenuWrapper } from '@/components/GameMenuWrapper/GameMenuWrapper';
 import LoadingView from '@/components/LoadingView/LoadingView';
 import { InitMenu } from '@/components/GameMenuWrapper/InitMenu';
+import { GameState } from '@/three/game/helpers/GameState';
+import { SceneManager } from '@/three/setup/SceneManager';
 
 export default function Home() {
 
   const [start, setStart] = useState(false)
   const [seconds, setSeconds] = useState(3)
   const [showMenu, setShowMenu] = useState(true)
+  const [gameState, setGameState] = useState<GameState>(SceneManager.diodrama?.state)
+
 
   useEffect(() => {
     const render = Render.getInstance()
+    SceneManager.setState = setGameState
     render.loop()
   }, []);
+
+  useEffect(() => {
+    console.log('status', gameState)
+  }, [gameState]);
 
 
   return (

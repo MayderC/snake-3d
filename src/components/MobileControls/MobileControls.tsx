@@ -15,7 +15,7 @@ const MobileControls = () => {
 
   const pauseGame = () => {
     setPause(true)
-    SceneManager.stopGame()
+    SceneManager.pauseGame()
   }
 
   const playGame = () => {

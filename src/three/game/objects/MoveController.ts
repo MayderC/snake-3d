@@ -54,7 +54,6 @@ export class MoveController {
   stopAutoMove() {
     if(this.paused)return
     clearInterval(this.interval);
-    console.log('stopAutoMove');
     this.paused = true;
   }
 }

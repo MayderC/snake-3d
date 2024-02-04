@@ -4,6 +4,7 @@ import { Diodrama } from '../game/objects/Diodrama';
 import { Loader } from "./Loader";
 import { MoveController } from "../game/objects/MoveController";
 import { GameStateManager } from "../game/objects/GameStateManager";
+import { GameState } from "../game/helpers/GameState";
 
 
 export class SceneManager {
@@ -15,6 +16,8 @@ export class SceneManager {
   public static loader : Loader
   public static control: MoveController;
   public static state : GameStateManager;
+  public static setState: Function;
+
   
   
   public static init() {
@@ -120,14 +123,25 @@ export class SceneManager {
 
   public static startGame() {
     SceneManager.diodrama.startGame(() => {
+      SceneManager.setState(GameState.PLAYING);
       SceneManager.control.startAutoMove();
     });
   }
 
-  public static stopGame() {
-    SceneManager.diodrama.gameOver(() => {
+  private static stopGame() {
+    SceneManager.diodrama.stopGame(() => {
       SceneManager.control.stopAutoMove();
     });
+  }
+
+  public static gameOver() {
+    SceneManager.stopGame();
+    SceneManager.setState(GameState.GAME_OVER);
+  }
+
+  public static pauseGame() {
+    SceneManager.stopGame();
+    SceneManager.setState(GameState.PAUSED);
   }
 
   public static setLastMove(move: string) {

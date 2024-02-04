@@ -21,9 +21,9 @@ export class Diodrama implements LifeCycle {
     this.snake = Snake.getInstance(this.sizeGrid);
   }
 
-  public gameOver(fn: Function) {
+  public stopGame(fn: Function) {
     fn()
-    this.state = GameState.GAME_OVER;
+    this.state = GameState.PAUSED;
   }
 
   public startGame(fn: Function) {

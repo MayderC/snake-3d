@@ -3,6 +3,7 @@ import { LifeCycle } from "../helpers/LifeCycle";
 import { RoundedBoxGeometry } from "three/examples/jsm/Addons.js";
 import { SceneManager } from "@/three/setup/SceneManager";
 import { Food } from './Food';
+import { GameState } from "../helpers/GameState";
 
 
 
@@ -148,11 +149,7 @@ export class Snake implements LifeCycle {
 
     this.lastMove = direction;
     if(this.ICrash(newPosition.x, newPosition.z)){
-
-      SceneManager.diodrama.gameOver(
-        () => SceneManager.control.stopAutoMove()
-      );
-
+      SceneManager.gameOver();
       return;
     }
     this.head.position.set(newPosition.x, newPosition.y, newPosition.z);
@@ -168,7 +165,7 @@ export class Snake implements LifeCycle {
   private ICrash(x: number, z: number) {
     if (x > this.gridLimit || x < -(this.gridLimit)) return true
     if (z > this.gridLimit || z < -(this.gridLimit)) return true;
-    const h = this.head.position; const t = this.tail;
+    const h = this.head.position;
     return this.body.some((m: Mesh) => m.position.x === h.x && m.position.z === h.z)
   }
 
