@@ -26,7 +26,6 @@ export default function Home() {
         showMenu &&
         <GameMenuWrapper>
         <InitMenu 
-          seconds={seconds} 
           setSeconds={setSeconds} 
           setShowMenu={setShowMenu}
           setStart={setStart}
