@@ -5,19 +5,17 @@ import Image from 'next/image'
 
 
 interface InitMenuProps {
-
   setSeconds: React.Dispatch<React.SetStateAction<number>>
-  seconds: number
   setStart: React.Dispatch<React.SetStateAction<boolean>>
   setShowMenu: React.Dispatch<React.SetStateAction<boolean>>
   showMenu: boolean
 }
 
 
-export const InitMenu = ({seconds, setSeconds, setShowMenu, setStart, showMenu}: InitMenuProps) => {
+export const InitMenu = ({setSeconds, setShowMenu, setStart, showMenu}: InitMenuProps) => {
 
   const startGame = () => {
-    SceneManager.control.startAutoMove()
+    SceneManager.startGame()
     setStart(true)
   }
 

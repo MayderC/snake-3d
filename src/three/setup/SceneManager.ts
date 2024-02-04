@@ -3,6 +3,7 @@ import { Clock, DoubleSide, Group, HemisphereLight, Mesh, MeshLambertMaterial, S
 import { Diodrama } from '../game/objects/Diodrama';
 import { Loader } from "./Loader";
 import { MoveController } from "../game/objects/MoveController";
+import { GameStateManager } from "../game/objects/GameStateManager";
 
 
 export class SceneManager {
@@ -13,12 +14,15 @@ export class SceneManager {
   public static mainGroup : Group = new Group();
   public static loader : Loader
   public static control: MoveController;
+  public static state : GameStateManager;
   
   
   public static init() {
     SceneManager.loader = new Loader();
     SceneManager.camera = new Camera();
     SceneManager.scene = new Scene();
+
+    SceneManager.state = new GameStateManager();
     SceneManager.createDiodrama();
     SceneManager.createLight()
     SceneManager.setSkyBox();
@@ -113,5 +117,22 @@ export class SceneManager {
     SceneManager.diodrama.restartGame();
     SceneManager.control = new MoveController(SceneManager.diodrama);
   }
+
+  public static startGame() {
+    SceneManager.diodrama.startGame(() => {
+      SceneManager.control.startAutoMove();
+    });
+  }
+
+  public static stopGame() {
+    SceneManager.diodrama.gameOver(() => {
+      SceneManager.control.stopAutoMove();
+    });
+  }
+
+  public static setLastMove(move: string) {
+    SceneManager.control.setLastMove(move);
+  }
+
 
 }
