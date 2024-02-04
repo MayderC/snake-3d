@@ -49,6 +49,10 @@ export class Snake implements LifeCycle {
   }
 
   public init() {
+
+    this.body = [];
+
+
     const item1 = new Mesh(this.geometry, this.material);
     this.tail.scale.set(this.cubeSize, this.cubeSize, this.cubeSize);
     this.tail.position.set(0, 0, 2);
@@ -71,6 +75,13 @@ export class Snake implements LifeCycle {
     // console.log('update');
   }
 
+  public removeBody() {
+    this.body.forEach((m: Mesh) => SceneManager.mainGroup.remove(m));
+  }
+
+  public addBody() {
+    this.body.forEach((m: Mesh) => SceneManager.mainGroup.add(m));
+  }
   
 
   private eat(food: Food) {

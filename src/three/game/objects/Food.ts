@@ -40,6 +40,11 @@ export class Food implements LifeCycle {
   }
 
   async getModelFood() {
+
+    if(this.BaseFood){
+      this.setDefaultProperties();
+    }
+
     const loader = new Loader();
     const model = await loader.getModel(this.path);
     this.BaseFood = model;

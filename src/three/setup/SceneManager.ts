@@ -2,7 +2,6 @@ import { Camera } from "./Camera";
 import { Clock, DoubleSide, Group, HemisphereLight, Mesh, MeshLambertMaterial, Scene, SphereGeometry, TextureLoader} from 'three';
 import { Diodrama } from '../game/objects/Diodrama';
 import { Loader } from "./Loader";
-import { Render } from "./Render";
 import { MoveController } from "../game/objects/MoveController";
 
 
@@ -88,10 +87,10 @@ export class SceneManager {
     await SceneManager.diodrama.init();
 
     SceneManager.mainGroup.add(SceneManager.diodrama.snake.head);
-    SceneManager.diodrama.snake.body.forEach((mesh: Mesh) => SceneManager.mainGroup.add(mesh))
 
     SceneManager.mainGroup.add(SceneManager.diodrama.grid);
     SceneManager.mainGroup.add(SceneManager.diodrama.food.food);
+    SceneManager.diodrama.snake.addBody();
 
     const clock = new Clock();
     function animateGroupRotation() {
@@ -110,5 +109,9 @@ export class SceneManager {
     SceneManager.scene.add(SceneManager.mainGroup);
   }
 
+  public static restartGame() {
+    SceneManager.diodrama.restartGame();
+    SceneManager.control = new MoveController(SceneManager.diodrama);
+  }
 
 }

@@ -28,6 +28,16 @@ export class Diodrama implements LifeCycle {
     fn()
   }
 
+  public restartGame(){
+    this.score = 0;
+
+    this.snake.removeBody();
+    this.snake.init();
+    this.snake.addBody();
+    this.food.newPosition();
+  } 
+
+
 
   public async init() {
     this.grid.position.set(0, 0, 0);
