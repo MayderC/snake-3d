@@ -16,6 +16,7 @@ interface typeProps {
   setShowMenu: Dispatch<SetStateAction<boolean>>
   setStart: Dispatch<SetStateAction<boolean>>
   showMenu: boolean
+  path?: string
 }
 interface MenuProps {
   MenuComponent: ComponentType<typeProps>
@@ -26,6 +27,7 @@ export default function Home() {
   const [start, setStart] = useState(false)
   const [seconds, setSeconds] = useState(3)
   const [showMenu, setShowMenu] = useState(true)
+  const [path, setPath] = useState<string>('/menu/lose.png')
   const [gameState, setGameState] = useState<GameState>(GameState.PAUSED)
 
 
@@ -38,6 +40,12 @@ export default function Home() {
   useEffect(() => {
 
     if(gameState === GameState.GAME_OVER){
+      setPath('/menu/lose.png')
+      setShowMenu(true)
+      setStart(false)
+    }
+    if(gameState === GameState.WIN){
+      setPath('/menu/win.png')
       setShowMenu(true)
       setStart(false)
     }
@@ -50,6 +58,7 @@ export default function Home() {
       setShowMenu={setShowMenu}
       setStart={setStart}
       showMenu={showMenu}
+      path={path}
     />
   );
 
@@ -60,7 +69,7 @@ export default function Home() {
         showMenu &&
         <GameMenuWrapper>
           {gameState === GameState.PAUSED && <Menu MenuComponent={InitMenu} />}
-          {gameState === GameState.GAME_OVER && <Menu MenuComponent={GameOverMenu} />}
+          {(gameState === GameState.GAME_OVER || gameState === GameState.WIN) && <Menu MenuComponent={GameOverMenu} />}
         </GameMenuWrapper>
       }
       {

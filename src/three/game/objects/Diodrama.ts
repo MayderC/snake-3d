@@ -11,7 +11,7 @@ export class Diodrama implements LifeCycle {
   public food : Food
   public snake : Snake 
   public score : number = 0;
-  public sizeGrid : number = 9;
+  public sizeGrid : number = 3;
   public grid: GridHelper = new GridHelper(this.sizeGrid, this.sizeGrid, 0x0000ff, 0x808080);
   public state : GameState = GameState.PAUSED;
 

@@ -134,6 +134,11 @@ export class SceneManager {
     });
   }
 
+  public static winGame() {
+    SceneManager.stopGame();
+    SceneManager.setState(GameState.WIN);
+  }
+
   public static gameOver() {
     SceneManager.stopGame();
     SceneManager.setState(GameState.GAME_OVER);
