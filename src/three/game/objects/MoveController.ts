@@ -8,6 +8,7 @@ export class MoveController {
   private interval: any;
   private lastMove: string = 'ArrowUp';
   private acceptedMoves = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 's', 'a', 'd'];
+  public paused: boolean = true;
   private oppositeDirection = new Map<string, string[]>(
     [
       ['ArrowUp', ['ArrowDown', 's']],
@@ -33,6 +34,8 @@ export class MoveController {
   }
 
   setLastMove(move: string) {
+    if(this.paused)return
+
     if (this.acceptedMoves.includes(move)) {
       if (this.oppositeDirection.get(this.lastMove)?.includes(move) == false) {
          return this.lastMove = move;
@@ -41,14 +44,16 @@ export class MoveController {
   }
 
   startAutoMove() {
+    if(this.paused == false)return
     this.interval = setInterval(() => {
       this.diodrama.snake.move(this.lastMove, this.diodrama.food);
     }, 500);
+    this.paused = false;
   }
 
   stopAutoMove() {
+    if(this.paused)return
     clearInterval(this.interval);
+    this.paused = true;
   }
-
-
 }

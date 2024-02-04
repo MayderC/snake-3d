@@ -2,8 +2,9 @@ import { Camera } from "./Camera";
 import { Clock, DoubleSide, Group, HemisphereLight, Mesh, MeshLambertMaterial, Scene, SphereGeometry, TextureLoader} from 'three';
 import { Diodrama } from '../game/objects/Diodrama';
 import { Loader } from "./Loader";
-import { Render } from "./Render";
 import { MoveController } from "../game/objects/MoveController";
+import { GameStateManager } from "../game/objects/GameStateManager";
+import { GameState } from "../game/helpers/GameState";
 
 
 export class SceneManager {
@@ -14,19 +15,23 @@ export class SceneManager {
   public static mainGroup : Group = new Group();
   public static loader : Loader
   public static control: MoveController;
+  public static state : GameStateManager;
+  public static setState: Function;
+
   
   
   public static init() {
     SceneManager.loader = new Loader();
     SceneManager.camera = new Camera();
     SceneManager.scene = new Scene();
+
+    SceneManager.state = new GameStateManager();
     SceneManager.createDiodrama();
     SceneManager.createLight()
     SceneManager.setSkyBox();
     SceneManager.resize();
     SceneManager.setSizes();
     SceneManager.control = new MoveController(SceneManager.diodrama);
-    SceneManager.control.startAutoMove();
   }
 
   public static async setSkyBox() {
@@ -64,8 +69,8 @@ export class SceneManager {
 
   private static setSizes() {
     if(window.innerWidth < 860) {
-      SceneManager.camera.position.set(0, 40, 33);
-      SceneManager.mainGroup.position.set(0, 10, -4);
+      SceneManager.camera.position.set(0, 30, 20);
+      SceneManager.mainGroup.position.set(0, 4, -4);
       SceneManager.mainGroup.rotation.x = Math.PI / 180 * 0
       SceneManager.camera.lookAt(0, 0,0)
     }
@@ -89,10 +94,10 @@ export class SceneManager {
     await SceneManager.diodrama.init();
 
     SceneManager.mainGroup.add(SceneManager.diodrama.snake.head);
-    SceneManager.diodrama.snake.body.forEach((mesh: Mesh) => SceneManager.mainGroup.add(mesh))
 
     SceneManager.mainGroup.add(SceneManager.diodrama.grid);
     SceneManager.mainGroup.add(SceneManager.diodrama.food.food);
+    SceneManager.diodrama.snake.addBody();
 
     const clock = new Clock();
     function animateGroupRotation() {
@@ -109,6 +114,38 @@ export class SceneManager {
   
 
     SceneManager.scene.add(SceneManager.mainGroup);
+  }
+
+  public static restartGame() {
+    SceneManager.diodrama.restartGame();
+    SceneManager.control = new MoveController(SceneManager.diodrama);
+  }
+
+  public static startGame() {
+    SceneManager.diodrama.startGame(() => {
+      SceneManager.setState(GameState.PLAYING);
+      SceneManager.control.startAutoMove();
+    });
+  }
+
+  private static stopGame() {
+    SceneManager.diodrama.stopGame(() => {
+      SceneManager.control.stopAutoMove();
+    });
+  }
+
+  public static gameOver() {
+    SceneManager.stopGame();
+    SceneManager.setState(GameState.GAME_OVER);
+  }
+
+  public static pauseGame() {
+    SceneManager.stopGame();
+    SceneManager.setState(GameState.PAUSED);
+  }
+
+  public static setLastMove(move: string) {
+    SceneManager.control.setLastMove(move);
   }
 
 
