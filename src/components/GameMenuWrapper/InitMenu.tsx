@@ -2,6 +2,7 @@
 import { SceneManager } from '@/three/setup/SceneManager'
 import React, { useState } from 'react'
 import Image from 'next/image'
+import StartCountDown from '@/hooks/StartCountDown'
 
 
 interface InitMenuProps {
@@ -14,28 +15,7 @@ interface InitMenuProps {
 
 export const InitMenu = ({setSeconds, setShowMenu, setStart, showMenu}: InitMenuProps) => {
 
-  const startGame = () => {
-    SceneManager.startGame()
-    setStart(true)
-  }
-
-
-  const initCountdown = () => {
-    setShowMenu(false)
-    const ms = new Date().getTime()
-    const interval = setInterval(() => {
-
-      const now = new Date().getTime()
-      const distance = now - ms
-      const sec = Math.floor((distance % (1000 * 60)) / 1000)
-
-      setSeconds(3 - sec)
-      if (sec >= 3) {
-        clearInterval(interval)
-        startGame()
-      }
-    }, 1000)
-  }
+  const {initCountdown} = StartCountDown({setSeconds, setShowMenu, setStart, showMenu})
 
   return (
     <>

@@ -161,14 +161,12 @@ export class Snake implements LifeCycle {
     if (this.iCanEat) this.eat(food);
   }
 
-
   private ICrash(x: number, z: number) {
     if (x > this.gridLimit || x < -(this.gridLimit)) return true
     if (z > this.gridLimit || z < -(this.gridLimit)) return true;
     const h = this.head.position;
     return this.body.some((m: Mesh) => m.position.x === h.x && m.position.z === h.z)
   }
-
 
   private followHead(headPosition: Vector3) {
     for(let i = 0; i < this.body.length; i++) {
@@ -178,10 +176,7 @@ export class Snake implements LifeCycle {
     }
   }
 
-
   destroy(): void {
     throw new Error("Method not implemented.");
   }
-
-
 }

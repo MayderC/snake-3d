@@ -9,13 +9,14 @@ import LoadingView from '@/components/LoadingView/LoadingView';
 import { InitMenu } from '@/components/GameMenuWrapper/InitMenu';
 import { GameState } from '@/three/game/helpers/GameState';
 import { SceneManager } from '@/three/setup/SceneManager';
+import { GameOverMenu } from '@/components/GameMenuWrapper/GameOverMenu';
 
 export default function Home() {
 
   const [start, setStart] = useState(false)
   const [seconds, setSeconds] = useState(3)
   const [showMenu, setShowMenu] = useState(true)
-  const [gameState, setGameState] = useState<GameState>(SceneManager.diodrama?.state)
+  const [gameState, setGameState] = useState<GameState>(GameState.PAUSED)
 
 
   useEffect(() => {
@@ -25,7 +26,12 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    console.log('status', gameState)
+
+    if(gameState === GameState.GAME_OVER){
+      setShowMenu(true)
+      setStart(false)
+    }
+
   }, [gameState]);
 
 
@@ -34,12 +40,23 @@ export default function Home() {
       {
         showMenu &&
         <GameMenuWrapper>
-        <InitMenu 
-          setSeconds={setSeconds} 
-          setShowMenu={setShowMenu}
-          setStart={setStart}
-          showMenu={showMenu} 
-        />
+          {gameState === GameState.PAUSED &&
+            <InitMenu 
+              setSeconds={setSeconds} 
+              setShowMenu={setShowMenu}
+              setStart={setStart}
+              showMenu={showMenu} 
+            />
+          }
+          {
+            gameState === GameState.GAME_OVER &&
+            <GameOverMenu
+              setSeconds={setSeconds} 
+              setShowMenu={setShowMenu}
+              setStart={setStart}
+              showMenu={showMenu} 
+            ></GameOverMenu>
+          }
       </GameMenuWrapper>
       }
       {
