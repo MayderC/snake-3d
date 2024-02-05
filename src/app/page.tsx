@@ -10,6 +10,7 @@ import { InitMenu } from '@/components/GameMenuWrapper/InitMenu';
 import { GameState } from '@/three/game/helpers/GameState';
 import { SceneManager } from '@/three/setup/SceneManager';
 import { GameOverMenu } from '@/components/GameMenuWrapper/GameOverMenu';
+import { LoadingThreejs } from '@/hooks/LoadingThreejs';
 
 interface typeProps {
   setSeconds: Dispatch<SetStateAction<number>>
@@ -30,9 +31,12 @@ export default function Home() {
   const [path, setPath] = useState<string>('/menu/lose.png')
   const [gameState, setGameState] = useState<GameState>(GameState.PAUSED)
 
+  const loadThree = LoadingThreejs()
+
 
   useEffect(() => {
-    const render = Render.getInstance()
+    if(!loadThree)return
+    const render = Render.getInstance(loadThree)
     SceneManager.setState = setGameState
     render.loop()
   }, []);
@@ -80,8 +84,15 @@ export default function Home() {
       }
 
       <canvas id="three" className='absolute -z-10'></canvas>
-      <LoadingView/>
+      { 
+        loadThree.modelCount < 1 && 
+          <LoadingView 
+            count={loadThree.modelCount}
+            percent={loadThree.progress}
+          />
+      }
       <MobileControls />
+
     </main>
   );
 }

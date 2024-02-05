@@ -1,8 +1,21 @@
 import './style.css'
 
-const LoadingView = () => {
+
+interface LoadingViewProps {
+  count: number
+  percent: number
+}
+
+const LoadingView = ({count, percent}: LoadingViewProps) => {
   return (
-    <div>LoadingView</div>
+
+
+
+    <div className='loading'>
+
+      <p className='text'>Loading</p>
+
+    </div>
   )
 }
 

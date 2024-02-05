@@ -1,11 +1,23 @@
 import { Camera } from "./Camera";
-import { Clock, DoubleSide, Group, HemisphereLight, Mesh, MeshLambertMaterial, Scene, SphereGeometry, TextureLoader} from 'three';
+import { Clock, DoubleSide, Group, HemisphereLight, LoadingManager, Mesh, MeshLambertMaterial, Scene, SphereGeometry, TextureLoader} from 'three';
 import { Diodrama } from '../game/objects/Diodrama';
 import { Loader } from "./Loader";
 import { MoveController } from "../game/objects/MoveController";
 import { GameStateManager } from "../game/objects/GameStateManager";
 import { GameState } from "../game/helpers/GameState";
 
+interface LoaderProps {
+  onProgress: (url: string, itemsLoaded: number, itemsTotal: number) => void;
+  onLoad: () => void;
+  onError: (url: string) => void;
+  onStart: (url: string, itemsLoaded: number, itemsTotal: number) => void;
+}
+
+interface LoaderTextureProps {
+  onProgress: (url: string, itemsLoaded: number, itemsTotal: number) => void;
+  onLoad: () => void;
+  onStart: (url: string, itemsLoaded: number, itemsTotal: number) => void;
+}
 
 export class SceneManager {
   
@@ -18,24 +30,51 @@ export class SceneManager {
   public static state : GameStateManager;
   public static setState: Function;
 
+
+
   
-  
-  public static init() {
-    SceneManager.loader = new Loader();
+  public static init(props:LoaderProps) {
+
+    console.log('SceneManager init', props)
+
+    SceneManager.loader = new Loader(props);
     SceneManager.camera = new Camera();
     SceneManager.scene = new Scene();
 
     SceneManager.state = new GameStateManager();
     SceneManager.createDiodrama();
     SceneManager.createLight()
-    SceneManager.setSkyBox();
+    SceneManager.setSkyBox(SceneManager.getLoadingManager(props));
     SceneManager.resize();
     SceneManager.setSizes();
     SceneManager.control = new MoveController(SceneManager.diodrama);
   }
 
-  public static async setSkyBox() {
-    const texture = new TextureLoader().load('/textures/space.jpeg')
+
+  private static getLoadingManager(props: LoaderProps) {
+
+    const loading = new LoadingManager();
+
+    loading.onStart = (url, itemsLoaded, itemsTotal) => {
+      props.onStart(url, itemsLoaded, itemsTotal);
+    };
+    loading.onLoad = () => {
+      props.onLoad();
+    };
+    loading.onProgress = (url, itemsLoaded, itemsTotal) => {
+      props.onProgress(url, itemsLoaded, itemsTotal);
+    };
+
+    loading.onError = (url) => {
+      props.onError(url);
+    }
+
+
+    return loading;
+  }
+
+  public static async setSkyBox(load: LoadingManager) {
+    const texture = new TextureLoader(load).load('/textures/space.jpeg')
     const skyBox = new Mesh(
       new SphereGeometry(100, 100, 100),
       new MeshLambertMaterial({map: texture, side: DoubleSide})

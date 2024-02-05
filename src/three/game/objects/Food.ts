@@ -45,7 +45,7 @@ export class Food implements LifeCycle {
       this.setDefaultProperties();
     }
 
-    const loader = new Loader();
+    const loader = SceneManager.loader;
     const model = await loader.getModel(this.path);
     this.BaseFood = model;
     this.BaseFood.traverse((obj) => {
