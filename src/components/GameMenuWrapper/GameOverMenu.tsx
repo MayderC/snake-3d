@@ -9,9 +9,10 @@ interface InitMenuProps {
   setStart: React.Dispatch<React.SetStateAction<boolean>>
   setShowMenu: React.Dispatch<React.SetStateAction<boolean>>
   showMenu: boolean
+  path?: string
 }
 
-export const  GameOverMenu = ({setSeconds, setShowMenu, setStart, showMenu}: InitMenuProps) => {
+export const  GameOverMenu = ({setSeconds, setShowMenu, setStart, showMenu, path = ''}: InitMenuProps) => {
 
   const {initCountdown} = StartCountDown({setSeconds, setShowMenu, setStart, showMenu})
 
@@ -20,7 +21,7 @@ export const  GameOverMenu = ({setSeconds, setShowMenu, setStart, showMenu}: Ini
     <div className='menu'>
 
       <div>
-        <Image src='/menu/lose.png' width={100} height={30} alt='' />
+        <Image src={path} width={100} height={30} alt='' />
       </div>
 
       <div onClick={() => {

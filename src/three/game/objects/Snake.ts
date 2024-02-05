@@ -89,15 +89,15 @@ export class Snake implements LifeCycle {
     this.iCanEat = false;
     SceneManager.mainGroup.remove(food.food);
     SceneManager.diodrama.food.newPosition();
-    this.addTail();
-
-
+    
+    
     let generatedPositions = new Set();
     let flagFinish = false;
-
+    
+    this.addTail();
 
     while(!SceneManager.diodrama.food.isAvailablePosition([this.head, ...this.body], SceneManager.diodrama.food.food.position)) {
-      if((generatedPositions.size) > SceneManager.diodrama.sizeGrid * SceneManager.diodrama.sizeGrid - SceneManager.diodrama.snake.body.length) flagFinish = true;
+      if((generatedPositions.size) >= SceneManager.diodrama.sizeGrid * SceneManager.diodrama.sizeGrid - SceneManager.diodrama.snake.body.length) flagFinish = true;
       if(flagFinish) break;
       const post = SceneManager.diodrama.food.food.position;
       const key = `[${post.x}]-[${post.z}]`;
@@ -109,13 +109,13 @@ export class Snake implements LifeCycle {
       };
       generatedPositions.add(key);
     }
-
+    
     if(flagFinish) {
-      console.log(generatedPositions);
-      console.log('Juego Terminado');
+      this.addTail();
+      SceneManager.winGame();
       return
     }
-
+    
     SceneManager.mainGroup.add(food.food);
   }
 

@@ -1,6 +1,12 @@
 import {  WebGLRenderer } from "three";
 import { SceneManager } from "./SceneManager";
 
+interface LoaderProps {
+  onProgress: (url: string, itemsLoaded: number, itemsTotal: number) => void;
+  onLoad: () => void;
+  onError: (url: string) => void;
+  onStart: (url: string, itemsLoaded: number, itemsTotal: number) => void;
+}
 
 
 export class Render  {
@@ -8,8 +14,8 @@ export class Render  {
   public static instance: Render;
   private renderer: WebGLRenderer;
 
-  private constructor() {
-    SceneManager.init();
+  private constructor(props: LoaderProps) {
+    SceneManager.init(props);
     this.renderer = this.init();
     this.onResize();
   }
@@ -43,9 +49,9 @@ export class Render  {
     return this.renderer;
   }
 
-  public static getInstance(): Render {
+  public static getInstance(props: LoaderProps): Render {
     if (!Render.instance) {
-      Render.instance = new Render();
+      Render.instance = new Render(props);
     }
     return Render.instance;
   }
